@@ -51,7 +51,7 @@ app.use((req, res, next) => {
   const allowedOrigins = [
     "https://event-manager-gules-omega.vercel.app",
     "http://localhost:5173",
-    "https://event-management1-sand.vercel.app"
+    "https://event-management1-sand.vercel.app",
     "http://localhost:3000",
     "http://localhost:5174",
   ];
