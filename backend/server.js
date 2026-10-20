@@ -50,7 +50,7 @@ app.use((req, res, next) => {
   // List of allowed origins
   const allowedOrigins = [
     "https://event-manager-gules-omega.vercel.app",
-    """http://localhost:5173",
+    "http://localhost:5173",
     "http://localhost:3000",
     "http://localhost:5174",
   ];
