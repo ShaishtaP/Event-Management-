@@ -4,6 +4,12 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
+  build: {
+    // Keep the production assets alongside the Express application so the
+    // existing web service can serve them without a separate frontend host.
+    outDir: path.resolve(__dirname, "../backend/public"),
+    emptyOutDir: true,
+  },
   server: {
     host: "::",
     port: 5173,

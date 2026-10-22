@@ -165,8 +165,8 @@ Use these credentials to test different user roles:
 ## 🚀 Deployment
 
 The repository includes a `render.yaml` Blueprint for a single Render web service.
-It builds the frontend, serves the generated files from the Express server, and
-keeps API requests on the same origin at `/api`.
+It builds the frontend into `backend/public`, serves the generated files from
+the Express server, and keeps API requests on the same origin at `/api`.
 
 Set `MONGODB_URI` in Render to a MongoDB connection string before the first
 deploy. Render generates `JWT_SECRET` from the Blueprint automatically.

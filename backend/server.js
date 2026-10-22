@@ -24,7 +24,7 @@ import { errorHandler, notFound } from "./middleware/errorHandler.js";
 dotenv.config();
 
 const backendDirectory = path.dirname(fileURLToPath(import.meta.url));
-const frontendBuildDirectory = path.resolve(backendDirectory, "../frontend/dist");
+const frontendBuildDirectory = path.join(backendDirectory, "public");
 
 console.log("🚀 Starting Campus Event Management API...");
 console.log("📍 Environment:", process.env.NODE_ENV || "development");
