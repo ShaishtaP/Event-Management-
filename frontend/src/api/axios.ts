@@ -1,7 +1,18 @@
 import axios from "axios";
 
 // API configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const PRODUCTION_API_URL = "https://event-management-j4sd.onrender.com";
+
+// Accepts VITE_API_URL with or without a trailing slash or "/api" suffix.
+const resolveApiBaseUrl = (): string => {
+  const configured =
+    (import.meta.env.VITE_API_URL as string | undefined) ||
+    (import.meta.env.PROD ? PRODUCTION_API_URL : "http://localhost:5000");
+  const trimmed = configured.replace(/\/+$/, "");
+  return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
+};
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 console.log('🔗 API Base URL:', API_BASE_URL);
 

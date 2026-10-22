@@ -48,14 +48,22 @@ app.use((req, res, next) => {
   console.log(`📍 Request path: ${req.path}`);
 
   // List of allowed origins
+  const extraOrigins = (process.env.CORS_ORIGINS || "")
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean);
   const allowedOrigins = [
     "https://event-management1-sand.vercel.app",
     "http://localhost:3000",
+    "http://localhost:5173",
     "http://localhost:5174",
+    ...extraOrigins,
   ];
+  const isVercelOrigin =
+    !!origin && /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
 
   // Set CORS headers for allowed origins
-  if (origin && allowedOrigins.includes(origin)) {
+  if (origin && (allowedOrigins.includes(origin) || isVercelOrigin)) {
     res.header("Access-Control-Allow-Origin", origin);
     console.log(`✅ Allowed origin: ${origin}`);
   } else if (!origin) {
