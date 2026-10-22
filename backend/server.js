@@ -6,9 +6,6 @@ import compression from "compression";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
-import { existsSync } from "fs";
 
 // Import database connection
 import connectDB from "./config/database.js";
@@ -22,9 +19,6 @@ import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
 // Load environment variables
 dotenv.config();
-
-const backendDirectory = path.dirname(fileURLToPath(import.meta.url));
-const frontendBuildDirectory = path.join(backendDirectory, "public");
 
 console.log("🚀 Starting Campus Event Management API...");
 console.log("📍 Environment:", process.env.NODE_ENV || "development");
@@ -155,10 +149,6 @@ app.use((req, res, next) => {
 
 // Root endpoint
 app.get("/", (req, res) => {
-  if (existsSync(frontendBuildDirectory)) {
-    return res.sendFile(path.join(frontendBuildDirectory, "index.html"));
-  }
-
   res.status(200).json({
     success: true,
     message: "🚀 Campus Event Management API is running!",
@@ -231,30 +221,22 @@ app.get("/api/*", (req, res) => {
   });
 });
 
-// Serve the production React build when it is available. API routes above
-// remain server-side, while all other routes fall back to the SPA entrypoint.
-if (existsSync(frontendBuildDirectory)) {
-  app.use(express.static(frontendBuildDirectory));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(frontendBuildDirectory, "index.html"));
+// 404 handler for non-API routes
+app.use("*", (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route ${req.originalUrl} not found`,
+    availableEndpoints: [
+      "/",
+      "/health",
+      "/api/health",
+      "/api/cors-test",
+      "/api/auth",
+      "/api/events",
+    ],
+    timestamp: new Date().toISOString(),
   });
-} else {
-  app.use("*", (req, res) => {
-    res.status(404).json({
-      success: false,
-      message: `Route ${req.originalUrl} not found`,
-      availableEndpoints: [
-        "/",
-        "/health",
-        "/api/health",
-        "/api/cors-test",
-        "/api/auth",
-        "/api/events",
-      ],
-      timestamp: new Date().toISOString(),
-    });
-  });
-}
+});
 
 // Global error handling middleware
 app.use((error, req, res, next) => {

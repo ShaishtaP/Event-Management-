@@ -1,9 +1,7 @@
 import axios from "axios";
 
 // API configuration
-// A relative URL keeps the web app and API on the same origin in production.
-// Vite proxies this path to the local API while developing.
-const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 console.log('🔗 API Base URL:', API_BASE_URL);
 
