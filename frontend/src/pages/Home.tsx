@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import Navbar from "../components/Navbar";
 import {
   Calendar,
@@ -9,113 +10,122 @@ import {
   BookOpen,
   Settings,
   ArrowRight,
-  CheckCircle,
-  Star,
+  CheckCircle2,
+  Sparkles,
+  ShieldCheck,
+  Compass,
 } from "lucide-react";
 
-const Home = () => {
+const Home: React.FC = () => {
   const features = [
     {
       icon: Calendar,
       title: "Event Management",
-      description: "Create, manage, and promote your campus events with ease.",
-      color: "text-primary",
+      description: "Create, curate, and publish campus events with structured workflows and instant live updates.",
+      badge: "Fast & Intuitive",
     },
     {
       icon: Users,
-      title: "Student Registration",
-      description: "Simple registration process for students to join events.",
-      color: "text-success",
+      title: "One-Tap Registration",
+      description: "Frictionless student registration with live capacity tracking and calendar-ready event passes.",
+      badge: "Real-Time",
     },
     {
       icon: BookOpen,
-      title: "Organizer Dashboard",
-      description:
-        "Comprehensive tools for event organizers to track engagement.",
-      color: "text-warning",
+      title: "Organizer Workspace",
+      description: "Comprehensive dashboard for tracking attendance metrics, attendee lists, and event lifecycle.",
+      badge: "Data-Driven",
     },
     {
-      icon: Settings,
-      title: "Admin Control",
-      description: "Full administrative control with approval workflows.",
-      color: "text-accent",
+      icon: ShieldCheck,
+      title: "Verified Admin Oversight",
+      description: "Role-based approval queues and governance ensuring safe, campus-compliant student activities.",
+      badge: "Secure",
     },
   ];
 
   const stats = [
-    { label: "Active Events", value: "50+", color: "text-primary" },
-    { label: "Registered Students", value: "1,200+", color: "text-success" },
-    { label: "Event Organizers", value: "85+", color: "text-warning" },
-    { label: "Campus Locations", value: "25+", color: "text-accent" },
+    { label: "Active Campus Events", value: "50+" },
+    { label: "Verified Students", value: "1,200+" },
+    { label: "Student Organizations", value: "85+" },
+    { label: "Campus Venues", value: "25+" },
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground flex flex-col selection:bg-primary/20 selection:text-primary">
       <Navbar />
 
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="bg-gradient-to-br from-primary/10 to-accent/10">
-          <div className="container mx-auto px-4 py-20 text-center">
-            <div className="max-w-4xl mx-auto">
-              <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
-                Your Campus Event
-                <span className="text-primary"> Hub</span>
-              </h1>
+      {/* Hero Section - Apple Keynote Aesthetic */}
+      <section className="relative overflow-hidden pt-16 pb-24 md:pt-24 md:pb-32">
+        {/* Subtle Apple Ambient Glow */}
+        <div 
+          className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-primary/10 dark:bg-primary/15 blur-[120px] rounded-full pointer-events-none -z-10"
+          aria-hidden="true"
+        />
 
-              <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Discover, create, and manage campus events all in one place.
-                Connect with your community and make every event memorable.
-              </p>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Release Pill Badge */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.08] text-xs font-medium text-foreground mb-8">
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            <span>Next-Generation Campus Experience</span>
+            <span className="text-muted-foreground">·</span>
+            <span className="text-primary font-semibold">2026 Edition</span>
+          </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                <Button asChild size="lg" className="text-lg px-8">
-                  <Link to="/events">
-                    Explore Events
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-foreground max-w-4xl mx-auto leading-[1.08] mb-6">
+            Campus events, <br className="hidden sm:inline" />
+            <span className="text-primary">elevated to perfection.</span>
+          </h1>
 
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="text-lg px-8"
-                >
-                  <Link to="/register">Get Started</Link>
-                </Button>
-              </div>
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto font-normal leading-relaxed mb-10">
+            A unified, role-based platform designed with purposeful simplicity to discover, host, and manage university gatherings.
+          </p>
 
-              {/* Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
-                {stats.map((stat, index) => (
-                  <div key={index} className="text-center">
-                    <div
-                      className={`text-2xl md:text-3xl font-bold ${stat.color} mb-1`}
-                    >
-                      {stat.value}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {stat.label}
-                    </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 mb-16">
+            <Button asChild size="lg" className="w-full sm:w-auto rounded-full px-8 text-sm font-semibold shadow-sm shadow-primary/25">
+              <Link to="/events">
+                Explore Events
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto rounded-full px-8 text-sm font-medium border-black/[0.1] dark:border-white/[0.15] bg-black/[0.02] dark:bg-white/[0.04]"
+            >
+              <Link to="/register">Create Account</Link>
+            </Button>
+          </div>
+
+          {/* Frosted Glass Stats Surface */}
+          <div className="max-w-4xl mx-auto liquid-glass border rounded-3xl p-6 sm:p-8 shadow-sm">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 divide-y md:divide-y-0 md:divide-x divide-black/[0.06] dark:divide-white/[0.08]">
+              {stats.map((stat, index) => (
+                <div key={index} className={`pt-4 md:pt-0 ${index > 0 ? "md:pl-6" : ""}`}>
+                  <div className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-1">
+                    {stat.value}
                   </div>
-                ))}
-              </div>
+                  <div className="text-xs text-muted-foreground font-medium">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Features Section */}
-      <div className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Everything You Need for Campus Events
+      <section className="py-20 sm:py-28 bg-black/[0.015] dark:bg-white/[0.02] border-y border-black/[0.04] dark:border-white/[0.06]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-4">
+              Designed with Purpose.
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Powerful tools for students, organizers, and administrators to
-              create an engaged campus community.
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+              Every detail engineered to stay out of your way and let the campus community thrive.
             </p>
           </div>
 
@@ -123,295 +133,217 @@ const Home = () => {
             {features.map((feature, index) => (
               <Card
                 key={index}
-                className="border-border hover:border-primary/30 transition-all duration-200 hover:shadow-lg"
+                className="apple-card p-6 flex flex-col justify-between"
               >
-                <CardHeader className="pb-4">
-                  <feature.icon className={`h-10 w-10 ${feature.color} mb-3`} />
-                  <CardTitle className="text-lg">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </CardContent>
+                <div>
+                  <div className="h-11 w-11 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-5">
+                    <feature.icon className="h-5 w-5" />
+                  </div>
+                  <Badge variant="secondary" className="text-[10px] uppercase font-semibold tracking-wider mb-2">
+                    {feature.badge}
+                  </Badge>
+                  <CardTitle className="text-lg font-semibold tracking-tight text-foreground mb-2">
+                    {feature.title}
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
               </Card>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* How It Works Section */}
-      <div className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              How It Works
+      {/* How It Works - Three Steps */}
+      <section className="py-20 sm:py-28 bg-background">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-4">
+              Simplicity in Motion.
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Three simple steps to get started with campus events
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+              Three seamless steps from initial onboarding to participating in live college events.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="text-center">
-              <div className="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-primary">1</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-8 rounded-3xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] text-center">
+              <div className="w-12 h-12 rounded-2xl bg-primary text-primary-foreground font-bold text-lg flex items-center justify-center mx-auto mb-5 shadow-sm shadow-primary/30">
+                1
               </div>
-              <h3 className="text-xl font-semibold mb-3">Sign Up</h3>
-              <p className="text-muted-foreground">
-                Create your account and choose your role - Student, Organizer,
-                or Admin
+              <h3 className="text-lg font-semibold tracking-tight text-foreground mb-2">
+                Join with Role
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Register as a Student, Organizer, or Administrator with dedicated authentication.
               </p>
             </div>
 
-            <div className="text-center">
-              <div className="bg-success/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-success">2</span>
+            <div className="p-8 rounded-3xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] text-center">
+              <div className="w-12 h-12 rounded-2xl bg-foreground text-background font-bold text-lg flex items-center justify-center mx-auto mb-5">
+                2
               </div>
-              <h3 className="text-xl font-semibold mb-3">Discover & Create</h3>
-              <p className="text-muted-foreground">
-                Browse events or create your own. Get approval and start
-                engaging
+              <h3 className="text-lg font-semibold tracking-tight text-foreground mb-2">
+                Discover & Create
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Filter approved campus events by date and venue, or draft new events with built-in capacity controls.
               </p>
             </div>
 
-            <div className="text-center">
-              <div className="bg-accent/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-accent">3</span>
+            <div className="p-8 rounded-3xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] text-center">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary font-bold text-lg flex items-center justify-center mx-auto mb-5">
+                3
               </div>
-              <h3 className="text-xl font-semibold mb-3">Connect & Engage</h3>
-              <p className="text-muted-foreground">
-                Register for events, network with peers, and build community
+              <h3 className="text-lg font-semibold tracking-tight text-foreground mb-2">
+                Connect & Attend
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Secure your spot with instant registration feedback and manage your personal event schedule.
               </p>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Role-Based Sections */}
-      <div className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Built for Everyone on Campus
+      {/* Role-Specific Capabilities */}
+      <section className="py-20 sm:py-28 bg-black/[0.015] dark:bg-white/[0.02] border-t border-black/[0.04] dark:border-white/[0.06]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-4">
+              Tailored for Every Role.
             </h2>
-            <p className="text-xl text-muted-foreground">
-              Tailored experiences for each role in your campus community
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+              Every persona gets an interface tuned specifically for their responsibilities.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Students */}
-            <Card className="border-border hover:border-primary/30 transition-all duration-200">
-              <CardHeader>
-                <Users className="h-8 w-8 text-primary mb-3" />
-                <CardTitle className="text-xl">For Students</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <ul className="space-y-2">
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="h-4 w-4 text-success mr-2" />
-                    Discover campus events
+            <Card className="apple-card p-6 flex flex-col justify-between">
+              <div>
+                <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
+                  <Users className="h-5 w-5" />
+                </div>
+                <CardTitle className="text-xl font-semibold tracking-tight text-foreground mb-3">
+                  Students
+                </CardTitle>
+                <ul className="space-y-2.5 text-sm text-muted-foreground mb-6">
+                  <li className="flex items-center">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500 mr-2 shrink-0" />
+                    Browse approved university events
                   </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="h-4 w-4 text-success mr-2" />
-                    Easy registration process
+                  <li className="flex items-center">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500 mr-2 shrink-0" />
+                    One-click registration & spots counter
                   </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="h-4 w-4 text-success mr-2" />
-                    Personal event dashboard
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="h-4 w-4 text-success mr-2" />
-                    Event reminders & updates
+                  <li className="flex items-center">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500 mr-2 shrink-0" />
+                    Personal schedule & cancellations
                   </li>
                 </ul>
-                <Button asChild variant="outline" className="w-full">
-                  <Link to="/register">Join as Student</Link>
-                </Button>
-              </CardContent>
+              </div>
+              <Button asChild variant="outline" className="w-full rounded-xl">
+                <Link to="/register">Register as Student</Link>
+              </Button>
             </Card>
 
             {/* Organizers */}
-            <Card className="border-border hover:border-accent/30 transition-all duration-200">
-              <CardHeader>
-                <BookOpen className="h-8 w-8 text-accent mb-3" />
-                <CardTitle className="text-xl">For Organizers</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <ul className="space-y-2">
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="h-4 w-4 text-success mr-2" />
-                    Create & manage events
+            <Card className="apple-card p-6 flex flex-col justify-between">
+              <div>
+                <div className="h-10 w-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center mb-4">
+                  <BookOpen className="h-5 w-5" />
+                </div>
+                <CardTitle className="text-xl font-semibold tracking-tight text-foreground mb-3">
+                  Organizers
+                </CardTitle>
+                <ul className="space-y-2.5 text-sm text-muted-foreground mb-6">
+                  <li className="flex items-center">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500 mr-2 shrink-0" />
+                    Publish events with venue details
                   </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="h-4 w-4 text-success mr-2" />
-                    Track registrations
+                  <li className="flex items-center">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500 mr-2 shrink-0" />
+                    Capacity & attendee management
                   </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="h-4 w-4 text-success mr-2" />
-                    Analytics & insights
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="h-4 w-4 text-success mr-2" />
-                    Engagement tools
+                  <li className="flex items-center">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500 mr-2 shrink-0" />
+                    Edit or cancel scheduled sessions
                   </li>
                 </ul>
-                <Button asChild variant="outline" className="w-full">
-                  <Link to="/register">Become Organizer</Link>
-                </Button>
-              </CardContent>
+              </div>
+              <Button asChild variant="outline" className="w-full rounded-xl">
+                <Link to="/register">Create as Organizer</Link>
+              </Button>
             </Card>
 
-            {/* Admins */}
-            <Card className="border-border hover:border-warning/30 transition-all duration-200">
-              <CardHeader>
-                <Settings className="h-8 w-8 text-warning mb-3" />
-                <CardTitle className="text-xl">For Admins</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <ul className="space-y-2">
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="h-4 w-4 text-success mr-2" />
-                    Approve/reject events
+            {/* Administrators */}
+            <Card className="apple-card p-6 flex flex-col justify-between">
+              <div>
+                <div className="h-10 w-10 rounded-xl bg-warning/10 text-warning flex items-center justify-center mb-4">
+                  <Settings className="h-5 w-5" />
+                </div>
+                <CardTitle className="text-xl font-semibold tracking-tight text-foreground mb-3">
+                  Administrators
+                </CardTitle>
+                <ul className="space-y-2.5 text-sm text-muted-foreground mb-6">
+                  <li className="flex items-center">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500 mr-2 shrink-0" />
+                    Approval & moderation queue
                   </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="h-4 w-4 text-success mr-2" />
-                    User management
+                  <li className="flex items-center">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500 mr-2 shrink-0" />
+                    Campus-wide user directory
                   </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="h-4 w-4 text-success mr-2" />
-                    Platform oversight
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="h-4 w-4 text-success mr-2" />
-                    Comprehensive analytics
+                  <li className="flex items-center">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500 mr-2 shrink-0" />
+                    Role assignment & platform controls
                   </li>
                 </ul>
-                <Button asChild variant="outline" className="w-full">
-                  <Link to="/register">Admin Access</Link>
-                </Button>
-              </CardContent>
+              </div>
+              <Button asChild variant="outline" className="w-full rounded-xl">
+                <Link to="/login">Admin Sign In</Link>
+              </Button>
             </Card>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* CTA Section */}
-      <div className="py-20 bg-gradient-to-br from-primary/10 to-accent/10">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto">
-            <Star className="h-16 w-16 text-primary mx-auto mb-6" />
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Ready to Transform Your Campus Events?
+      {/* Clean Apple Call To Action */}
+      <section className="py-20 sm:py-24 bg-background">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="p-10 sm:p-14 rounded-3xl liquid-glass border border-black/[0.08] dark:border-white/[0.1] shadow-sm">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-4">
+              Get Started with CampusEvents.
             </h2>
-            <p className="text-xl text-muted-foreground mb-8">
-              Join thousands of students, organizers, and administrators already
-              using our platform to create amazing campus experiences.
+            <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed">
+              Explore open events across your university or log in to manage your campus organization.
             </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="text-lg px-8">
-                <Link to="/register">
-                  Get Started Today
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Button asChild size="lg" className="w-full sm:w-auto rounded-full px-8 shadow-sm">
+                <Link to="/register">Create Free Account</Link>
               </Button>
-
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="text-lg px-8"
-              >
+              <Button asChild variant="ghost" size="lg" className="w-full sm:w-auto rounded-full px-8">
                 <Link to="/events">Browse Events</Link>
               </Button>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Footer */}
-      <footer className="bg-card border-t border-border py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <Calendar className="h-8 w-8 text-primary" />
-                <span className="text-xl font-bold text-foreground">
-                  CampusEvents
-                </span>
-              </div>
-              <p className="text-muted-foreground mb-4 max-w-md">
-                Your comprehensive platform for discovering, creating, and
-                managing campus events. Building stronger campus communities
-                through engagement.
-              </p>
+      {/* Apple Style Footer */}
+      <footer className="mt-auto border-t border-black/[0.06] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.01] py-12 text-xs text-muted-foreground">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center space-x-2">
+            <div className="h-6 w-6 rounded-lg bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
+              C
             </div>
-
-            <div>
-              <h4 className="font-semibold text-foreground mb-4">
-                Quick Links
-              </h4>
-              <ul className="space-y-2">
-                <li>
-                  <Link
-                    to="/events"
-                    className="text-muted-foreground hover:text-primary"
-                  >
-                    Public Events
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/register"
-                    className="text-muted-foreground hover:text-primary"
-                  >
-                    Sign Up
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/login"
-                    className="text-muted-foreground hover:text-primary"
-                  >
-                    Login
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-foreground mb-4">Support</h4>
-              <ul className="space-y-2">
-                <li>
-                  <a
-                    href="#"
-                    className="text-muted-foreground hover:text-primary"
-                  >
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-muted-foreground hover:text-primary"
-                  >
-                    Contact Us
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-muted-foreground hover:text-primary"
-                  >
-                    Privacy Policy
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <span className="font-semibold text-foreground text-sm">CampusEvents</span>
+            <span>· Campus Event Management Portal</span>
           </div>
-
-          <div className="border-t border-border pt-8 mt-8 text-center">
-            <p className="text-muted-foreground">© 2025 CampusEvents</p>
+          <div>
+            <p>© 2026 CampusEvents. Crafted with Apple Human Interface Guidelines.</p>
           </div>
         </div>
       </footer>

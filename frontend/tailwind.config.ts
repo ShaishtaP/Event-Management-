@@ -18,6 +18,25 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: [
+					"-apple-system",
+					"BlinkMacSystemFont",
+					'"SF Pro Text"',
+					'"SF Pro Display"',
+					'"SF Pro"',
+					"system-ui",
+					"sans-serif",
+				],
+				display: [
+					"-apple-system",
+					"BlinkMacSystemFont",
+					'"SF Pro Display"',
+					'"SF Pro"',
+					"system-ui",
+					"sans-serif",
+				],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -76,6 +95,9 @@ export default {
 				}
 			},
 			borderRadius: {
+				'3xl': '1.75rem',
+				'2xl': '1.25rem',
+				xl: '0.875rem',
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'

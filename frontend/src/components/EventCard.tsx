@@ -10,9 +10,9 @@ import {
   Edit, 
   Trash2, 
   Check, 
-  X,
-  UserCheck,
-  Loader2
+  X, 
+  UserCheck, 
+  Loader2 
 } from 'lucide-react';
 import { formatDate, formatTime } from '../utils/dateHelpers';
 
@@ -66,104 +66,115 @@ const EventCard: React.FC<EventCardProps> = ({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
-        return <Badge className="bg-green-100 text-green-800 border-green-200">Approved</Badge>;
+        return <Badge variant="success">Approved</Badge>;
       case 'rejected':
-        return <Badge className="bg-red-100 text-red-800 border-red-200">Rejected</Badge>;
+        return <Badge variant="destructive">Rejected</Badge>;
       case 'pending':
-        return <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">Pending</Badge>;
+        return <Badge variant="warning">Pending Review</Badge>;
       default:
         return null;
     }
   };
 
   const isEventFull = event.registeredCount >= event.capacity;
-  const availableSpots = event.capacity - event.registeredCount;
+  const availableSpots = Math.max(0, event.capacity - event.registeredCount);
+  const percentFilled = Math.min(100, Math.round((event.registeredCount / (event.capacity || 1)) * 100));
   const isLoading = isRegistrationLoading || isUnregistrationLoading;
 
   // Check if event is in the past
   const eventDateTime = new Date(`${event.date} ${event.time}`);
-  const isPastEvent = eventDateTime < new Date();
+  const isPastEvent = !isNaN(eventDateTime.getTime()) && eventDateTime < new Date();
 
   return (
-    <Card className="hover:shadow-md transition-all duration-200 border-border hover:border-primary/20">
-      <CardHeader className="pb-3">
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-lg font-semibold text-foreground line-clamp-2">
-            {event.title}
-          </CardTitle>
-          <div className="flex flex-col items-end space-y-1">
-            {getStatusBadge(event.status)}
-            {event.isPublic && (
-              <Badge variant="outline" className="text-xs">
-                Public
-              </Badge>
-            )}
-            {isPastEvent && (
-              <Badge variant="outline" className="text-xs bg-gray-100 text-gray-600">
-                Past Event
-              </Badge>
-            )}
+    <Card className="apple-card flex flex-col justify-between overflow-hidden group">
+      <div>
+        <CardHeader className="pb-3 space-y-2">
+          <div className="flex justify-between items-start gap-3">
+            <CardTitle className="text-lg font-semibold text-foreground line-clamp-2 tracking-tight group-hover:text-primary transition-colors">
+              {event.title}
+            </CardTitle>
+            <div className="flex flex-col items-end gap-1.5 shrink-0">
+              {getStatusBadge(event.status)}
+              {event.isPublic && (
+                <Badge variant="secondary" className="text-[10px] py-0">
+                  Public
+                </Badge>
+              )}
+              {isPastEvent && (
+                <Badge variant="outline" className="text-[10px] py-0 text-muted-foreground">
+                  Past Event
+                </Badge>
+              )}
+            </div>
           </div>
-        </div>
-      </CardHeader>
+        </CardHeader>
 
-      <CardContent className="space-y-3">
-        <p className="text-muted-foreground text-sm line-clamp-3">
-          {event.description}
-        </p>
+        <CardContent className="space-y-4">
+          <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed">
+            {event.description}
+          </p>
 
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="flex items-center text-muted-foreground">
-            <Calendar className="h-4 w-4 mr-2 text-primary" />
-            {formatDate(event.date)}
+          <div className="space-y-2 text-xs text-muted-foreground bg-black/[0.02] dark:bg-white/[0.02] p-3 rounded-xl border border-black/[0.04] dark:border-white/[0.06]">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center">
+                <Calendar className="h-3.5 w-3.5 mr-1.5 text-primary shrink-0" />
+                <span className="truncate">{formatDate(event.date)}</span>
+              </div>
+              <div className="flex items-center">
+                <Clock className="h-3.5 w-3.5 mr-1.5 text-primary shrink-0" />
+                <span className="truncate">{formatTime(event.time)}</span>
+              </div>
+            </div>
+            <div className="flex items-center pt-1 border-t border-black/[0.04] dark:border-white/[0.06]">
+              <MapPin className="h-3.5 w-3.5 mr-1.5 text-primary shrink-0" />
+              <span className="truncate font-medium text-foreground">{event.location}</span>
+            </div>
           </div>
-          <div className="flex items-center text-muted-foreground">
-            <Clock className="h-4 w-4 mr-2 text-primary" />
-            {formatTime(event.time)}
-          </div>
-          <div className="flex items-center text-muted-foreground col-span-2">
-            <MapPin className="h-4 w-4 mr-2 text-primary" />
-            {event.location}
-          </div>
-        </div>
 
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center text-muted-foreground">
-            <Users className="h-4 w-4 mr-2 text-primary" />
-            <span>
-              {event.registeredCount} / {event.capacity} registered
-            </span>
-          </div>
-          {!isPastEvent && (
-            <>
-              {availableSpots > 0 && !isEventFull && (
-                <span className="text-green-600 text-xs">
-                  {availableSpots} spots left
+          {/* Attendance Capacity Bar */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-muted-foreground flex items-center">
+                <Users className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
+                {event.registeredCount} / {event.capacity} registered
+              </span>
+              {!isPastEvent && (
+                <span>
+                  {availableSpots > 0 && !isEventFull ? (
+                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                      {availableSpots} spots left
+                    </span>
+                  ) : isEventFull ? (
+                    <span className="text-danger font-medium">Full</span>
+                  ) : null}
                 </span>
               )}
-              {isEventFull && (
-                <span className="text-red-600 text-xs font-medium">
-                  Event Full
-                </span>
-              )}
-            </>
+            </div>
+            <div className="h-1.5 w-full bg-black/[0.06] dark:bg-white/[0.08] rounded-full overflow-hidden">
+              <div 
+                className={`h-full rounded-full transition-all duration-300 ${
+                  isEventFull ? 'bg-danger' : percentFilled > 80 ? 'bg-amber-500' : 'bg-primary'
+                }`}
+                style={{ width: `${percentFilled}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="text-xs text-muted-foreground flex items-center justify-between pt-1">
+            <span>By <span className="font-medium text-foreground">{event.organizerName}</span></span>
+          </div>
+
+          {/* Registration Status Banner */}
+          {isRegistered && (
+            <div className="flex items-center text-xs font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 rounded-xl">
+              <UserCheck className="h-4 w-4 mr-1.5 shrink-0" />
+              <span>You are registered for this event</span>
+            </div>
           )}
-        </div>
+        </CardContent>
+      </div>
 
-        <div className="text-xs text-muted-foreground">
-          Organized by {event.organizerName}
-        </div>
-
-        {/* Registration Status Indicator */}
-        {isRegistered && (
-          <div className="flex items-center text-sm text-green-600 bg-green-50 p-2 rounded">
-            <UserCheck className="h-4 w-4 mr-2" />
-            <span>You're registered for this event</span>
-          </div>
-        )}
-      </CardContent>
-
-      <CardFooter className="pt-3 border-t border-border bg-muted/30">
+      <CardFooter className="pt-3 pb-4 border-t border-black/[0.06] dark:border-white/[0.08] bg-black/[0.01] dark:bg-white/[0.01]">
         <div className="flex flex-wrap gap-2 w-full">
           {/* Organizer Actions */}
           {showActions && (
@@ -172,20 +183,20 @@ const EventCard: React.FC<EventCardProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={() => onEdit?.(event)}
-                className="flex-1 min-w-0"
+                className="flex-1 rounded-xl"
                 disabled={isLoading}
               >
-                <Edit className="h-4 w-4 mr-1" />
+                <Edit className="h-3.5 w-3.5 mr-1.5" />
                 Edit
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => onDelete?.(event.id)}
-                className="flex-1 min-w-0 hover:bg-red-50 hover:text-red-700 hover:border-red-200"
+                className="flex-1 rounded-xl hover:bg-danger/10 hover:text-danger hover:border-danger/30"
                 disabled={isLoading}
               >
-                <Trash2 className="h-4 w-4 mr-1"/>
+                <Trash2 className="h-3.5 w-3.5 mr-1.5" />
                 Delete
               </Button>
             </>
@@ -198,26 +209,26 @@ const EventCard: React.FC<EventCardProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={() => onApprove?.(event.id)}
-                className="flex-1 min-w-0 hover:bg-green-50 hover:text-green-700 hover:border-green-200"
+                className="flex-1 rounded-xl hover:bg-emerald-500/10 hover:text-emerald-600 hover:border-emerald-500/30 font-medium"
                 disabled={isLoading}
               >
-                <Check className="h-4 w-4 mr-1" />
+                <Check className="h-3.5 w-3.5 mr-1.5" />
                 Approve
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => onReject?.(event.id)}
-                className="flex-1 min-w-0 hover:bg-red-50 hover:text-red-700 hover:border-red-200"
+                className="flex-1 rounded-xl hover:bg-danger/10 hover:text-danger hover:border-danger/30 font-medium"
                 disabled={isLoading}
               >
-                <X className="h-4 w-4 mr-1" />
+                <X className="h-3.5 w-3.5 mr-1.5" />
                 Reject
               </Button>
             </>
           )}
 
-          {/* Registration Actions */}
+          {/* Student Registration Actions */}
           {showRegistration && event.status === 'approved' && !isPastEvent && (
             <>
               {isRegistered ? (
@@ -225,18 +236,18 @@ const EventCard: React.FC<EventCardProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={() => onUnregister?.(event.id)}
-                  className="w-full hover:bg-yellow-50 hover:text-yellow-700 hover:border-yellow-200"
+                  className="w-full rounded-xl hover:bg-amber-500/10 hover:text-amber-600 hover:border-amber-500/30"
                   disabled={isUnregistrationLoading}
                 >
                   {isUnregistrationLoading ? (
                     <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Unregistering...
+                      <Loader2 className="h-3.5 w-3.5 mr-2 animate-spin" />
+                      Updating...
                     </>
                   ) : (
                     <>
-                      <UserCheck className="h-4 w-4 mr-1" />
-                      Unregister
+                      <UserCheck className="h-3.5 w-3.5 mr-1.5" />
+                      Cancel Registration
                     </>
                   )}
                 </Button>
@@ -245,17 +256,17 @@ const EventCard: React.FC<EventCardProps> = ({
                   size="sm"
                   onClick={() => onRegister?.(event.id)}
                   disabled={isEventFull || isRegistrationLoading}
-                  className="w-full"
+                  className="w-full rounded-xl shadow-sm"
                 >
                   {isRegistrationLoading ? (
                     <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      <Loader2 className="h-3.5 w-3.5 mr-2 animate-spin" />
                       Registering...
                     </>
                   ) : (
                     <>
-                      <Users className="h-4 w-4 mr-1" />
-                      {isEventFull ? 'Event Full' : 'Register'}
+                      <Users className="h-3.5 w-3.5 mr-1.5" />
+                      {isEventFull ? 'Event Full' : 'Register Now'}
                     </>
                   )}
                 </Button>
@@ -265,15 +276,15 @@ const EventCard: React.FC<EventCardProps> = ({
 
           {/* Past Event Message */}
           {showRegistration && isPastEvent && (
-            <div className="w-full text-center py-2 text-sm text-gray-500">
-              This event has ended
+            <div className="w-full text-center py-1.5 text-xs text-muted-foreground font-medium">
+              Event Concluded
             </div>
           )}
 
-          {/* Registered but no actions */}
+          {/* Registered state indicator */}
           {!showRegistration && !showActions && !showAdminActions && isRegistered && (
-            <div className="w-full text-center py-2 text-sm text-green-600">
-              ✓ Registered
+            <div className="w-full text-center py-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center justify-center">
+              <Check className="h-3.5 w-3.5 mr-1" /> Registered
             </div>
           )}
         </div>

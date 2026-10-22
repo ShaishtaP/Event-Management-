@@ -3,13 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import EventCard from '../components/EventCard';
 import Navbar from '../components/Navbar';
 import { fetchPublicEvents, registerForEvent } from '../store/slices/eventsSlice';
 import { RootState, AppDispatch } from '../store/store';
-import { Calendar, Search, Filter, Users, MapPin } from 'lucide-react';
+import { Calendar, Search, Filter, Users, MapPin, Sparkles, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const PublicEvents = () => {
+const PublicEvents: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { events, registeredEvents, isLoading } = useSelector((state: RootState) => state.events);
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
@@ -35,10 +37,8 @@ const PublicEvents = () => {
   // Filter and sort events
   const filteredEvents = events
     .filter(event => {
-      // Only show approved public events
       if (event.status !== 'approved' || !event.isPublic) return false;
       
-      // Search filter
       if (searchTerm) {
         const searchLower = searchTerm.toLowerCase();
         return (
@@ -48,11 +48,9 @@ const PublicEvents = () => {
           event.organizerName.toLowerCase().includes(searchLower)
         );
       }
-      
       return true;
     })
     .filter(event => {
-      // Category filter
       if (filterBy === 'available') {
         return event.registeredCount < event.capacity;
       } else if (filterBy === 'full') {
@@ -73,106 +71,96 @@ const PublicEvents = () => {
       }
     });
 
+  const availableCount = events.filter(e => e.registeredCount < e.capacity).length;
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground flex flex-col selection:bg-primary/20 selection:text-primary">
       <Navbar />
       
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center mb-4">
-            <Calendar className="h-8 w-8 text-primary mr-3" />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+        {/* Header Section */}
+        <div className="mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-foreground">Public Events</h1>
-              <p className="text-muted-foreground">
-                Discover and register for upcoming campus events
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-3">
+                <Sparkles className="h-3 w-3" />
+                Live Campus Calendar
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
+                Public Events
+              </h1>
+              <p className="text-sm sm:text-base text-muted-foreground mt-1 max-w-xl">
+                Explore, bookmark, and register for university workshops, fests, and hackathons.
               </p>
+            </div>
+
+            {/* Quick Metrics */}
+            <div className="flex items-center gap-3">
+              <div className="px-4 py-2 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.04] dark:border-white/[0.06] text-center">
+                <div className="text-xs text-muted-foreground font-medium">All Events</div>
+                <div className="text-xl font-bold tracking-tight text-foreground">{events.length}</div>
+              </div>
+              <div className="px-4 py-2 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.04] dark:border-white/[0.06] text-center">
+                <div className="text-xs text-muted-foreground font-medium">Open Spots</div>
+                <div className="text-xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">{availableCount}</div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Search and Filters */}
-        <div className="mb-8 space-y-4 md:space-y-0 md:flex md:items-center md:space-x-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+        {/* Search & Filter Bar - Floating Glass Surface */}
+        <div className="mb-10 p-2.5 rounded-2xl liquid-glass border border-black/[0.06] dark:border-white/[0.08] shadow-sm flex flex-col sm:flex-row items-center gap-2.5">
+          <div className="relative flex-1 w-full">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4 pointer-events-none" />
             <Input
               type="text"
-              placeholder="Search events by title, description, location, or organizer..."
+              placeholder="Search by title, location, description, or host..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-10 pr-9 h-10 rounded-xl bg-transparent border-0 focus-visible:ring-1 focus-visible:ring-primary/40"
             />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                aria-label="Clear search"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
           
-          <div className="flex space-x-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-full sm:w-36 h-10 rounded-xl bg-black/[0.02] dark:bg-white/[0.04] border-black/[0.06] dark:border-white/[0.08] text-xs font-medium">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="date">Date</SelectItem>
-                <SelectItem value="title">Title</SelectItem>
+              <SelectContent className="rounded-xl">
+                <SelectItem value="date">Sort by Date</SelectItem>
+                <SelectItem value="title">Sort by Title</SelectItem>
                 <SelectItem value="capacity">Available Spots</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={filterBy} onValueChange={setFilterBy}>
-              <SelectTrigger className="w-40">
-                <Filter className="h-4 w-4 mr-2" />
+              <SelectTrigger className="w-full sm:w-36 h-10 rounded-xl bg-black/[0.02] dark:bg-white/[0.04] border-black/[0.06] dark:border-white/[0.08] text-xs font-medium">
+                <Filter className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
                 <SelectValue placeholder="Filter" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="rounded-xl">
                 <SelectItem value="all">All Events</SelectItem>
-                <SelectItem value="available">Available</SelectItem>
-                <SelectItem value="full">Full</SelectItem>
+                <SelectItem value="available">Spots Available</SelectItem>
+                <SelectItem value="full">Event Full</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-card border border-border rounded-lg p-4">
-            <div className="flex items-center">
-              <Calendar className="h-5 w-5 text-primary mr-2" />
-              <div>
-                <p className="text-sm text-muted-foreground">Total Events</p>
-                <p className="text-2xl font-bold text-foreground">{events.length}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-card border border-border rounded-lg p-4">
-            <div className="flex items-center">
-              <Users className="h-5 w-5 text-success mr-2" />
-              <div>
-                <p className="text-sm text-muted-foreground">Available</p>
-                <p className="text-2xl font-bold text-foreground">
-                  {events.filter(e => e.registeredCount < e.capacity).length}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-card border border-border rounded-lg p-4">
-            <div className="flex items-center">
-              <MapPin className="h-5 w-5 text-warning mr-2" />
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  {isAuthenticated ? 'Registered' : 'Featured'}
-                </p>
-                <p className="text-2xl font-bold text-foreground">
-                  {isAuthenticated ? registeredEvents.length : events.filter(e => e.capacity > 100).length}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Events Grid */}
         {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div className="flex flex-col items-center justify-center py-24 space-y-3">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent" />
+            <p className="text-sm text-muted-foreground">Loading campus events...</p>
           </div>
         ) : filteredEvents.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -187,21 +175,24 @@ const PublicEvents = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <Calendar className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">
-              {searchTerm ? 'No events found' : 'No public events available'}
+          <div className="text-center py-20 px-4 rounded-3xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.04] dark:border-white/[0.06] max-w-lg mx-auto">
+            <div className="w-12 h-12 rounded-2xl bg-black/[0.04] dark:bg-white/[0.06] flex items-center justify-center mx-auto mb-4 text-muted-foreground">
+              <Calendar className="h-6 w-6" />
+            </div>
+            <h3 className="text-lg font-semibold text-foreground tracking-tight mb-1">
+              {searchTerm ? 'No matching events found' : 'No upcoming events'}
             </h3>
-            <p className="text-muted-foreground max-w-md mx-auto">
+            <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-5 leading-relaxed">
               {searchTerm 
-                ? 'Try adjusting your search terms or filters to find events.'
-                : 'Check back later for new events or contact event organizers.'
+                ? 'Try adjusting your search terms or resetting the active filters.'
+                : 'New events are published regularly by campus organizers. Check back soon!'
               }
             </p>
             {searchTerm && (
               <Button
                 variant="outline"
-                className="mt-4"
+                size="sm"
+                className="rounded-full px-5"
                 onClick={() => setSearchTerm('')}
               >
                 Clear Search
@@ -210,27 +201,26 @@ const PublicEvents = () => {
           </div>
         )}
 
-        {/* Call to Action for Non-Authenticated Users */}
+        {/* Prompt for Non-Authenticated Visitors */}
         {!isAuthenticated && filteredEvents.length > 0 && (
-          <div className="mt-12 text-center bg-muted rounded-lg p-8">
-            <Users className="h-12 w-12 text-primary mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">
-              Join the Community
+          <div className="mt-16 p-8 rounded-3xl liquid-glass border border-black/[0.08] dark:border-white/[0.1] text-center max-w-2xl mx-auto shadow-sm">
+            <h3 className="text-xl font-bold tracking-tight text-foreground mb-2">
+              Ready to attend?
             </h3>
-            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Sign up to register for events, create your own events, and connect with your campus community.
+            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+              Create a free student or organizer account to register for events, receive updates, and host your own gatherings.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild>
-                <a href="/register">Get Started</a>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Button asChild className="w-full sm:w-auto rounded-full px-7 shadow-sm">
+                <Link to="/register">Create Account</Link>
               </Button>
-              <Button variant="outline" asChild>
-                <a href="/login">Already have an account?</a>
+              <Button asChild variant="outline" className="w-full sm:w-auto rounded-full px-7">
+                <Link to="/login">Sign In</Link>
               </Button>
             </div>
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 };

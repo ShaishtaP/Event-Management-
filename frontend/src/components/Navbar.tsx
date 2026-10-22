@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { logout } from '../store/slices/authSlice';
 import { RootState } from '../store/store';
 import { 
@@ -9,14 +10,13 @@ import {
   LogOut, 
   User, 
   Settings, 
-  Users, 
   BookOpen,
   Menu,
-  X
+  X,
+  Compass,
 } from 'lucide-react';
-import { useState } from 'react';
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -30,77 +30,111 @@ const Navbar = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const NavLink = ({ to, children, className = '' }: { to: string; children: React.ReactNode; className?: string }) => (
-    <Link
-      to={to}
-      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-        isActive(to)
-          ? 'bg-primary text-primary-foreground shadow-sm'
-          : 'text-foreground hover:bg-muted hover:text-primary'
-      } ${className}`}
-      onClick={() => setIsMobileMenuOpen(false)}
-    >
-      {children}
-    </Link>
-  );
+  const NavLink = ({ 
+    to, 
+    children, 
+    className = '' 
+  }: { 
+    to: string; 
+    children: React.ReactNode; 
+    className?: string;
+  }) => {
+    const active = isActive(to);
+    return (
+      <Link
+        to={to}
+        className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-150 ease-out active:scale-[0.98] ${
+          active
+            ? 'bg-foreground/10 text-foreground font-semibold shadow-none'
+            : 'text-muted-foreground hover:text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06]'
+        } ${className}`}
+        onClick={() => setIsMobileMenuOpen(false)}
+      >
+        {children}
+      </Link>
+    );
+  };
 
   return (
-    <nav className="bg-background border-b border-border shadow-sm">
+    <nav className="sticky top-0 z-50 w-full liquid-glass border-b transition-all duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <Calendar className="h-8 w-8 text-primary" />
-            <span className="font-bold text-xl text-foreground">CampusEvents</span>
+          {/* Brand Logo */}
+          <Link 
+            to="/" 
+            className="flex items-center space-x-2.5 group transition-transform duration-150 active:scale-[0.98]"
+          >
+            <div className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-sm shadow-primary/30">
+              <Calendar className="h-5 w-5" />
+            </div>
+            <span className="font-semibold text-lg tracking-tight text-foreground group-hover:text-primary transition-colors">
+              CampusEvents
+            </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4">
-            <NavLink to="/events" className='bg-blue-500 text-white'>Public Events</NavLink>
+          {/* Desktop Navigation - Apple Segmented Navigation */}
+          <div className="hidden md:flex items-center space-x-1.5 bg-black/[0.03] dark:bg-white/[0.04] p-1 rounded-full border border-black/[0.04] dark:border-white/[0.06]">
+            <NavLink to="/events">
+              <Compass className="inline h-4 w-4 mr-1.5 -mt-0.5" />
+              Public Events
+            </NavLink>
             
-            {isAuthenticated ? (
+            {isAuthenticated && (
               <>
                 {user?.role === 'admin' && (
                   <NavLink to="/admin">
-                    <Settings className="inline h-4 w-4 mr-1" />
+                    <Settings className="inline h-4 w-4 mr-1.5 -mt-0.5" />
                     Admin Panel
                   </NavLink>
                 )}
                 {user?.role === 'organizer' && (
                   <NavLink to="/organizer">
-                    <BookOpen className="inline h-4 w-4 mr-1" />
+                    <BookOpen className="inline h-4 w-4 mr-1.5 -mt-0.5" />
                     My Events
                   </NavLink>
                 )}
                 {user?.role === 'student' && (
                   <NavLink to="/student">
-                    <User className="inline h-4 w-4 mr-1" />
+                    <User className="inline h-4 w-4 mr-1.5 -mt-0.5" />
                     Dashboard
                   </NavLink>
                 )}
-                
-                <div className="flex items-center space-x-2 ml-4 pl-4 border-l border-border">
-                  <span className="text-sm text-muted-foreground">
-                    {user?.name} ({user?.role})
-                  </span>
-                  <Button
-                    onClick={handleLogout}
-                    variant="outline"
-                    size="sm"
-                    className="ml-2"
-                  >
-                    <LogOut className="h-4 w-4 mr-1" />
-                    Logout
-                  </Button>
-                </div>
               </>
+            )}
+          </div>
+
+          {/* User Controls */}
+          <div className="hidden md:flex items-center space-x-3">
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-black/[0.03] dark:bg-white/[0.05] border border-black/[0.04] dark:border-white/[0.06]">
+                  <div className="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold">
+                    {user?.name?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                  <span className="text-sm font-medium text-foreground">
+                    {user?.name}
+                  </span>
+                  <Badge variant="secondary" className="text-[10px] uppercase tracking-wider py-0 px-2 font-semibold">
+                    {user?.role}
+                  </Badge>
+                </div>
+                <Button
+                  onClick={handleLogout}
+                  variant="ghost"
+                  size="sm"
+                  className="rounded-full text-muted-foreground hover:text-danger hover:bg-danger/10"
+                >
+                  <LogOut className="h-4 w-4 mr-1" />
+                  Sign Out
+                </Button>
+              </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Button asChild variant="outline">
-                  <Link to="/login">Login</Link>
+                <Button asChild variant="ghost" size="sm" className="rounded-full font-medium">
+                  <Link to="/login">Sign In</Link>
                 </Button>
-                <Button asChild>
-                  <Link to="/register">Register</Link>
+                <Button asChild size="sm" className="rounded-full px-4 font-medium shadow-sm">
+                  <Link to="/register">Get Started</Link>
                 </Button>
               </div>
             )}
@@ -110,63 +144,71 @@ const Navbar = () => {
           <div className="md:hidden">
             <Button
               variant="ghost"
-              size="sm"
+              size="icon-sm"
+              className="rounded-full"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation Drawer */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-border mt-2 pt-2 pb-4">
-            <div className="flex flex-col space-y-2">
-              <NavLink to="/events">Public Events</NavLink>
+          <div className="md:hidden border-t border-black/[0.06] dark:border-white/[0.08] py-4 space-y-2 animate-in slide-in-from-top-2 duration-150">
+            <div className="flex flex-col space-y-1">
+              <NavLink to="/events">
+                <Compass className="inline h-4 w-4 mr-2" />
+                Public Events
+              </NavLink>
               
               {isAuthenticated ? (
                 <>
                   {user?.role === 'admin' && (
                     <NavLink to="/admin">
-                      <Settings className="inline h-4 w-4 mr-1" />
+                      <Settings className="inline h-4 w-4 mr-2" />
                       Admin Panel
                     </NavLink>
                   )}
                   {user?.role === 'organizer' && (
                     <NavLink to="/organizer">
-                      <BookOpen className="inline h-4 w-4 mr-1" />
+                      <BookOpen className="inline h-4 w-4 mr-2" />
                       My Events
                     </NavLink>
                   )}
                   {user?.role === 'student' && (
                     <NavLink to="/student">
-                      <User className="inline h-4 w-4 mr-1" />
+                      <User className="inline h-4 w-4 mr-2" />
                       Dashboard
                     </NavLink>
                   )}
                   
-                  <div className="flex flex-col space-y-2 pt-2 border-t border-border">
-                    <span className="text-sm text-muted-foreground px-3">
-                      {user?.name} ({user?.role})
-                    </span>
+                  <div className="pt-3 mt-2 border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between px-3">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{user?.name}</p>
+                      <Badge variant="secondary" className="text-[10px] uppercase font-semibold">
+                        {user?.role}
+                      </Badge>
+                    </div>
                     <Button
                       onClick={handleLogout}
-                      variant="outline"
+                      variant="ghost"
                       size="sm"
-                      className="mx-3"
+                      className="rounded-full text-danger hover:bg-danger/10"
                     >
                       <LogOut className="h-4 w-4 mr-1" />
-                      Logout
+                      Sign Out
                     </Button>
                   </div>
                 </>
               ) : (
-                <div className="flex flex-col space-y-2 pt-2 border-t border-border">
-                  <Button asChild variant="outline" className="mx-3">
-                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
+                <div className="pt-3 mt-2 border-t border-black/[0.06] dark:border-white/[0.08] flex flex-col space-y-2 px-2">
+                  <Button asChild variant="outline" className="w-full rounded-xl">
+                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>Sign In</Link>
                   </Button>
-                  <Button asChild className="mx-3">
-                    <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>Register</Link>
+                  <Button asChild className="w-full rounded-xl">
+                    <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>Get Started</Link>
                   </Button>
                 </div>
               )}
