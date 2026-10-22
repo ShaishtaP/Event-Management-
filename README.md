@@ -164,10 +164,12 @@ Use these credentials to test different user roles:
 
 ## 🚀 Deployment
 
-The application is ready for deployment on platforms like:
-- **Frontend**: Vercel, Netlify, or AWS S3
-- **Backend**: Heroku, Railway, or AWS EC2
-- **Database**: MongoDB Atlas for cloud hosting
+The repository includes a `render.yaml` Blueprint for a single Render web service.
+It builds the frontend, serves the generated files from the Express server, and
+keeps API requests on the same origin at `/api`.
+
+Set `MONGODB_URI` in Render to a MongoDB connection string before the first
+deploy. Render generates `JWT_SECRET` from the Blueprint automatically.
 
 ## 🧪 Testing
 
